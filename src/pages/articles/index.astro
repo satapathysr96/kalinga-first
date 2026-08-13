@@ -1,0 +1,243 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import NewsCard from '../../components/NewsCard.astro';
+import { getAllArticles, getCategories } from '../../lib/contentful.js';
+
+const [articles, categories] = await Promise.all([
+  getAllArticles(),
+  getCategories(),
+]);
+
+// "All" tag first, then discovered categories.
+const filters = ['All', ...categories];
+---
+
+<Layout
+  activePath="/articles"
+  title="Articles"
+  description="Browse the full archive of Kalinga First 24*7 News stories — politics, business, agriculture, heritage, sports and local news."
+>
+  <main class="container">
+    <header class="feed-head">
+      <h1 class="section-title">News Feed Archive</h1>
+      <p class="feed-sub">
+        Explore every published story. Filter by beat or search by keyword.
+      </p>
+    </header>
+
+    <div class="feed-toolbar">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input
+          type="search"
+          id="article-search"
+          placeholder="Search headlines..."
+          aria-label="Search articles"
+        />
+      </div>
+      <div class="filter-tags" role="tablist" aria-label="Filter by category">
+        {
+          filters.map((f, i) => (
+            <button
+              class={`filter-tag ${i === 0 ? 'active' : ''}`}
+              data-filter={f.toLowerCase()}
+              type="button"
+            >
+              {f}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    {
+      articles.length > 0 ? (
+        <div class="news-grid" id="articles-grid">
+          {articles.map((a) => (
+            <div
+              class="grid-item"
+              data-category={String(a.category).toLowerCase()}
+              data-title={a.title.toLowerCase()}
+              data-summary={(a.summary || '').toLowerCase()}
+            >
+              <NewsCard article={a} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <i class="fa-regular fa-folder-open" />
+          <h2>No articles published yet</h2>
+          <p>Once stories are published in Contentful they will appear here.</p>
+        </div>
+      )
+    }
+
+    <p class="no-results" id="no-results" hidden>
+      <i class="fa-regular fa-face-frown"></i>
+      No stories match your search. Try a different keyword or filter.
+    </p>
+  </main>
+</Layout>
+
+<script>
+  // ---- Client-side filter + search island (vanilla JS) ----
+  const searchInput = document.getElementById('article-search');
+  const tags = Array.from(document.querySelectorAll('.filter-tag'));
+  const items = Array.from(document.querySelectorAll('#articles-grid .grid-item'));
+  const noResults = document.getElementById('no-results');
+
+  let activeFilter = 'all';
+  let query = '';
+
+  function applyFilters() {
+    let visibleCount = 0;
+    items.forEach((item) => {
+      const cat = item.getAttribute('data-category') || '';
+      const title = item.getAttribute('data-title') || '';
+      const summary = item.getAttribute('data-summary') || '';
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchesQuery =
+        !query || title.includes(query) || summary.includes(query);
+      const show = matchesFilter && matchesQuery;
+      item.style.display = show ? '' : 'none';
+      if (show) visibleCount += 1;
+    });
+    if (noResults) noResults.hidden = visibleCount !== 0;
+  }
+
+  tags.forEach((tag) => {
+    tag.addEventListener('click', () => {
+      tags.forEach((t) => t.classList.remove('active'));
+      tag.classList.add('active');
+      activeFilter = tag.getAttribute('data-filter') || 'all';
+      applyFilters();
+    });
+  });
+
+  searchInput?.addEventListener('input', (e) => {
+    query = (e.target instanceof HTMLInputElement ? e.target.value : '')
+      .trim()
+      .toLowerCase();
+    applyFilters();
+  });
+</script>
+
+<style>
+  .feed-head {
+    margin-bottom: 25px;
+  }
+
+  .feed-sub {
+    color: var(--text-muted);
+    margin-top: -12px;
+  }
+
+  .feed-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 35px;
+  }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-white);
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    min-width: 260px;
+    flex: 1;
+    max-width: 360px;
+  }
+
+  .search-box i {
+    color: var(--text-muted);
+  }
+
+  .search-box input {
+    border: none;
+    background: transparent;
+    width: 100%;
+    outline: none;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+  }
+
+  .filter-tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .filter-tag {
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    color: var(--primary);
+    padding: 9px 18px;
+    border-radius: 999px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: var(--transition);
+  }
+
+  .filter-tag:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .filter-tag.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+  }
+
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+  }
+
+  .no-results {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 50px 0;
+    font-size: 1rem;
+  }
+
+  .no-results i {
+    display: block;
+    font-size: 2rem;
+    margin-bottom: 12px;
+    color: var(--border-color);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    background: var(--bg-white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .empty-state i {
+    font-size: 3rem;
+    color: var(--border-color);
+    margin-bottom: 16px;
+  }
+
+  .empty-state h2 {
+    font-family: var(--font-heading);
+    color: var(--primary);
+    margin-bottom: 10px;
+  }
+
+  .empty-state p {
+    color: var(--text-muted);
+  }
+</style>

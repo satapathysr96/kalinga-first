@@ -1,0 +1,153 @@
+---
+/**
+ * Reusable article card used across the Home grid, Articles feed,
+ * and Related Stories. Degrades gracefully when an image is missing.
+ */
+const { article } = Astro.props;
+
+const {
+  title = 'Untitled Story',
+  slug = '',
+  category = 'Local',
+  summary = '',
+  featuredImage = null,
+  publishedDate = null,
+  readTime = 3,
+} = article ?? {};
+
+const categorySlug = String(category).toLowerCase();
+
+// Per-category fallback icon shown when there is no featured image.
+const ICONS = {
+  politics: 'fa-landmark-dome',
+  business: 'fa-briefcase',
+  agriculture: 'fa-wheat-awn',
+  heritage: 'fa-gopuram',
+  sports: 'fa-person-running',
+  local: 'fa-location-dot',
+};
+const fallbackIcon = ICONS[categorySlug] ?? 'fa-newspaper';
+
+const dateLabel = publishedDate
+  ? new Date(publishedDate).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
+  : '';
+
+const href = slug ? `/articles/${slug}` : '#';
+---
+
+<article class="news-card">
+  <a href={href} class="card-img-link" aria-label={title}>
+    <div class="card-img">
+      {
+        featuredImage?.url ? (
+          <img src={featuredImage.url} alt={featuredImage.alt || title} loading="lazy" />
+        ) : (
+          <div class={`img-placeholder cat-${categorySlug}`}>
+            <i class={`fa-solid ${fallbackIcon}`} />
+          </div>
+        )
+      }
+    </div>
+  </a>
+  <div class="card-body">
+    <span class={`meta-tag cat-${categorySlug}`}>{category}</span>
+    <h3><a href={href}>{title}</a></h3>
+    {summary && <p class="card-summary">{summary}</p>}
+    <div class="card-meta">
+      {dateLabel && <span>{dateLabel}</span>}
+      {dateLabel && <span aria-hidden="true"> • </span>}
+      <span>{readTime} min read</span>
+    </div>
+  </div>
+</article>
+
+<style>
+  .news-card {
+    background: var(--bg-white);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .card-img-link {
+    display: block;
+  }
+
+  .card-img {
+    height: 200px;
+    overflow: hidden;
+    background: var(--border-color);
+  }
+
+  .card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .news-card:hover .card-img img {
+    transform: scale(1.05);
+  }
+
+  .img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 3rem;
+    background: linear-gradient(135deg, var(--primary) 0%, #1e3a5f 100%);
+  }
+
+  .card-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .card-body h3 {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    color: var(--primary);
+    line-height: 1.3;
+  }
+
+  .card-body h3 a {
+    transition: color 0.2s ease;
+  }
+
+  .card-body h3 a:hover {
+    color: var(--accent);
+  }
+
+  .card-summary {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-meta {
+    margin-top: auto;
+  }
+</style>

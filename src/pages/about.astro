@@ -1,0 +1,241 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const team = [
+  {
+    name: 'Dr. Santosh Kumar Acharya',
+    role: 'Managing Director & Editor-In-Chief',
+    icon: 'fa-user-tie',
+  },
+  {
+    name: 'Smita Mohanty',
+    role: 'Senior Prime Anchor',
+    icon: 'fa-microphone-lines',
+  },
+  {
+    name: 'Rajesh Pradhan',
+    role: 'Chief In-Field Photojournalist',
+    icon: 'fa-camera-retro',
+  },
+  {
+    name: 'Priya Nayak',
+    role: 'Head of Political Desk',
+    icon: 'fa-pen-nib',
+  },
+];
+
+const values = [
+  {
+    icon: 'fa-shield-halved',
+    title: 'Accuracy Above All',
+    text: 'Every report is field-verified and cross-checked before it reaches you.',
+  },
+  {
+    icon: 'fa-scale-balanced',
+    title: 'Objective & Fair',
+    text: 'We present balanced perspectives without political or commercial bias.',
+  },
+  {
+    icon: 'fa-users',
+    title: 'Rooted in Community',
+    text: 'Grassroots policy, local welfare, and regional voices sit at our core.',
+  },
+];
+---
+
+<Layout
+  activePath="/about"
+  title="About Us"
+  description="First in News. First in Trust. Learn about our editorial standards, mission, and the team behind Kalinga First 24*7 News."
+>
+  <main class="container">
+    <section class="about-hero">
+      <h1>First in News. First in Trust.</h1>
+      <p>Bringing uncompromised, objective 24*7 journalism into the modern era.</p>
+    </section>
+
+    <section class="mission">
+      <h2 class="section-title">Our Editorial Standards</h2>
+      <p>
+        We recognize that accurate news drives public empowerment. Kalinga First 24*7 News
+        is dedicated to delivering highly checked, field-verified news updates focusing
+        deeply on infrastructural growth, localized grassroots policy adjustments, and
+        societal welfare structures. Our newsroom operates around the clock to keep the
+        people of Odisha informed, engaged, and empowered.
+      </p>
+    </section>
+
+    <section class="values">
+      {
+        values.map((v) => (
+          <div class="value-card">
+            <div class="value-icon">
+              <i class={`fa-solid ${v.icon}`} />
+            </div>
+            <h3>{v.title}</h3>
+            <p>{v.text}</p>
+          </div>
+        ))
+      }
+    </section>
+
+    <section class="team">
+      <h2 class="section-title team-title">The Leadership Team</h2>
+      <div class="team-grid">
+        {
+          team.map((member) => (
+            <div class="team-card">
+              <div class="team-avatar">
+                <i class={`fa-solid ${member.icon}`} />
+              </div>
+              <h4>{member.name}</h4>
+              <p class="role">{member.role}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .about-hero {
+    background: var(--primary);
+    color: #fff;
+    padding: 70px 40px;
+    border-radius: var(--radius);
+    text-align: center;
+    margin-bottom: 50px;
+    border-bottom: 5px solid var(--accent);
+  }
+
+  .about-hero h1 {
+    font-family: var(--font-heading);
+    font-size: 2.6rem;
+    margin-bottom: 14px;
+  }
+
+  .about-hero p {
+    color: #cbd5e1;
+    font-size: 1.1rem;
+  }
+
+  .mission {
+    max-width: 820px;
+    margin: 0 auto 55px;
+    text-align: center;
+  }
+
+  .mission .section-title {
+    display: inline-block;
+  }
+
+  .mission p {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    line-height: 1.8;
+  }
+
+  .values {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 30px;
+    margin-bottom: 60px;
+  }
+
+  .value-card {
+    background: var(--bg-white);
+    border-radius: var(--radius);
+    padding: 34px 26px;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    border-top: 3px solid var(--accent);
+    transition: var(--transition);
+  }
+
+  .value-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .value-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: var(--bg-light);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+
+  .value-card h3 {
+    font-family: var(--font-heading);
+    color: var(--primary);
+    margin-bottom: 10px;
+  }
+
+  .value-card p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .team-title {
+    text-align: center;
+  }
+
+  .team-title::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+  }
+
+  .team-card {
+    background: var(--bg-white);
+    border-radius: var(--radius);
+    text-align: center;
+    padding: 34px 20px;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+  }
+
+  .team-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .team-avatar {
+    width: 110px;
+    height: 110px;
+    background: var(--bg-light);
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: var(--primary);
+    border: 3px solid var(--border-color);
+  }
+
+  .team-card h4 {
+    font-family: var(--font-heading);
+    color: var(--primary);
+    font-size: 1.15rem;
+  }
+
+  .role {
+    color: var(--accent);
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+</style>

@@ -1,0 +1,294 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  activePath="/contact"
+  title="Contact Us"
+  description="Reach the Kalinga First 24*7 News desk — press inquiries, anonymous tips, and newsroom contact details."
+>
+  <main class="container">
+    <h1 class="section-title">Reach Our News Desk</h1>
+
+    <div class="contact-grid">
+      <div class="form-wrap">
+        <h2>Send Us a Message</h2>
+        <p class="form-intro">
+          Have a story, a press inquiry, or a confidential tip? We read every submission.
+        </p>
+
+        <form id="contact-form" novalidate>
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required placeholder="Enter your name" />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              placeholder="Enter your email id"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="subject">Inquiry Type</label>
+            <select id="subject" name="subject">
+              <option>Press / Media Inquiry</option>
+              <option>Anonymous News Tip</option>
+              <option>General Feedback</option>
+              <option>Advertising & Partnerships</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Secure Message</label>
+            <textarea
+              id="message"
+              name="message"
+              rows="5"
+              required
+              placeholder="Provide tip details or general outreach notes..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit">
+            <i class="fa-solid fa-paper-plane"></i> Submit Inquiry
+          </button>
+
+          <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+
+      <aside class="info-wrap">
+        <h2>Newsroom Info</h2>
+
+        <div class="info-block">
+          <i class="fa-solid fa-envelope"></i>
+          <div>
+            <strong>General Inquiries</strong>
+            <a href="mailto:contact@kalingafirst.com">contact@kalingafirst.com</a>
+          </div>
+        </div>
+
+        <div class="info-block">
+          <i class="fa-solid fa-user-secret"></i>
+          <div>
+            <strong>Secure Tips Desk</strong>
+            <a href="mailto:tips@kalingafirst.com">tips@kalingafirst.com</a>
+          </div>
+        </div>
+
+        <div class="info-block">
+          <i class="fa-solid fa-phone"></i>
+          <div>
+            <strong>Newsroom Hotline</strong>
+            <a href="tel:+916740000000">+91 1234567890</a>
+          </div>
+        </div>
+
+        <div class="info-block">
+          <i class="fa-solid fa-location-dot"></i>
+          <div>
+            <strong>Main Studio Headquarters</strong>
+            <span>Bhimatangi,<br />Bhubaneswar, Odisha, 751002</span>
+          </div>
+        </div>
+
+        <div class="map-placeholder" aria-label="Map placeholder">
+          <i class="fa-solid fa-map-location-dot"></i>
+          <p>Interactive Map Placeholder</p>
+          <span>Bhubaneswar, Odisha</span>
+        </div>
+      </aside>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  // Client-side form handling (island). Replace the simulated submit with a
+  // real endpoint (e.g. a Contentful webhook, Netlify Forms, or an API route).
+  const form = document.getElementById('contact-form');
+  const status = document.getElementById('form-status');
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!(form instanceof HTMLFormElement)) return;
+
+    if (!form.checkValidity()) {
+      if (status) {
+        status.textContent = 'Please fill in all required fields correctly.';
+        status.className = 'form-status error';
+      }
+      form.reportValidity();
+      return;
+    }
+
+    if (status) {
+      status.textContent =
+        'Thank you — your message has been received. Our desk will respond shortly.';
+      status.className = 'form-status success';
+    }
+    form.reset();
+  });
+</script>
+
+<style>
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 40px;
+  }
+
+  @media (max-width: 860px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .form-wrap,
+  .info-wrap {
+    background: var(--bg-white);
+    padding: 36px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .form-wrap h2,
+  .info-wrap h2 {
+    font-family: var(--font-heading);
+    color: var(--primary);
+    margin-bottom: 6px;
+  }
+
+  .form-intro {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    margin-bottom: 24px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 0.92rem;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--bg-light);
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(10, 37, 64, 0.12);
+  }
+
+  .btn-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 14px 28px;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: var(--transition);
+  }
+
+  .btn-submit:hover {
+    background: var(--primary);
+  }
+
+  .form-status {
+    margin-top: 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .form-status.success {
+    color: #2e7d32;
+  }
+
+  .form-status.error {
+    color: var(--accent);
+  }
+
+  .info-block {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 22px;
+  }
+
+  .info-block i {
+    color: var(--accent);
+    font-size: 1.1rem;
+    margin-top: 3px;
+    width: 22px;
+    text-align: center;
+  }
+
+  .info-block strong {
+    display: block;
+    color: var(--primary);
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+  }
+
+  .info-block a,
+  .info-block span {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+  }
+
+  .info-block a:hover {
+    color: var(--accent);
+  }
+
+  .map-placeholder {
+    height: 200px;
+    background: var(--bg-light);
+    border-radius: 6px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: var(--text-muted);
+    border: 1px dashed var(--border-color);
+  }
+
+  .map-placeholder i {
+    font-size: 2rem;
+    color: var(--accent);
+  }
+
+  .map-placeholder p {
+    font-weight: 600;
+    color: var(--primary);
+  }
+
+  .map-placeholder span {
+    font-size: 0.82rem;
+  }
+</style>

@@ -1,0 +1,175 @@
+---
+/**
+ * Sticky site header with logo + primary navigation.
+ * `activePath` (passed from Layout) highlights the current nav link.
+ */
+const { activePath = '/' } = Astro.props;
+
+const links = [
+  { href: '/', label: 'Home' },
+  { href: '/articles', label: 'Articles' },
+  { href: '/about', label: 'About Us' },
+  { href: '/contact', label: 'Contact Us' },
+];
+
+function isActive(href) {
+  if (href === '/') return activePath === '/';
+  return activePath.startsWith(href);
+}
+---
+
+<header>
+  <div class="container nav-container">
+    <a href="/" class="logo" aria-label="Kalinga First 24*7 News — Home">
+      <img src="/logo.png" alt="Kalinga First 24*7 News" class="logo-img" />
+      <div class="logo-text">
+        <h1>KALINGA <span>FIRST</span> 24*7 <span>News</span></h1>
+      </div>
+    </a>
+
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <nav class="nav-links" id="primary-nav">
+      {
+        links.map((link) => (
+          <a href={link.href} class={isActive(link.href) ? 'active' : ''}>
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>
+
+<script>
+  // Lightweight vanilla island: mobile nav toggle.
+  const toggle = document.querySelector('.nav-toggle');
+  const nav = document.getElementById('primary-nav');
+  toggle?.addEventListener('click', () => {
+    const open = nav?.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', String(Boolean(open)));
+  });
+</script>
+
+<style>
+  header {
+    background-color: var(--bg-white);
+    border-bottom: 2px solid var(--primary);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+  }
+
+  .logo-img {
+    height: 56px;
+    width: auto;
+    display: block;
+  }
+
+  .logo-text h1 {
+    font-family: var(--font-body);
+    font-size: 1.4rem;
+    color: var(--primary);
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .logo-text span {
+    color: var(--accent);
+    font-family: var(--font-body);
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 30px;
+  }
+
+  .nav-links a {
+    font-weight: 500;
+    color: var(--primary);
+    padding: 8px 0;
+    position: relative;
+    transition: var(--transition);
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: var(--accent);
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--accent);
+    transition: var(--transition);
+  }
+
+  .nav-links a:hover::after,
+  .nav-links a.active::after {
+    width: 100%;
+  }
+
+  .nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    color: var(--primary);
+  }
+
+  @media (max-width: 768px) {
+    .nav-toggle {
+      display: block;
+    }
+
+    .nav-links {
+      position: absolute;
+      top: 80px;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      gap: 0;
+      background: var(--bg-white);
+      border-bottom: 2px solid var(--primary);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .nav-links.open {
+      max-height: 320px;
+    }
+
+    .nav-links a {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .nav-links a::after {
+      display: none;
+    }
+  }
+</style>

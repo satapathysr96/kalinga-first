@@ -1,0 +1,196 @@
+---
+/**
+ * Base Layout — wraps every page.
+ * Provides <head> metadata, global fonts, the design-system CSS variables,
+ * global resets, and the shared Header / Footer chrome.
+ */
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const {
+  title = 'Kalinga First 24*7 News',
+  description = 'Truth First. Kalinga First. Uncompromised, objective 24*7 regional journalism.',
+  activePath = '/',
+} = Astro.props;
+
+const siteTitle =
+  title === 'Kalinga First 24*7 News' ? title : `${title} | Kalinga First 24*7 News`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{siteTitle}</title>
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.jpg" />
+
+    <!-- Google Fonts: Lora (editorial headlines) + Inter (body UI) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- FontAwesome for iconography -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <Header activePath={activePath} />
+    <slot />
+    <Footer />
+
+    <style is:global>
+      /* ==================================================================
+         DESIGN SYSTEM — CSS CUSTOM PROPERTIES
+         ================================================================== */
+      :root {
+        --primary: #0a2540; /* Deep Navy Blue */
+        --accent: #c8102e; /* Crimson Red */
+        --text-dark: #1a1a1a; /* Soft Charcoal Black */
+        --text-muted: #626262; /* Medium Gray */
+        --bg-light: #f4f6f8; /* Off-white / Soft Grey */
+        --bg-white: #ffffff;
+        --border-color: #e2e8f0;
+
+        --font-heading: 'Lora', serif;
+        --font-body: 'Inter', sans-serif;
+
+        --max-width: 1200px;
+        --radius: 8px;
+        --shadow-sm: 0 4px 10px rgba(0, 0, 0, 0.03);
+        --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.05);
+        --transition: all 0.3s ease;
+      }
+
+      /* ==================================================================
+         RESET & BASE
+         ================================================================== */
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--font-body);
+        color: var(--text-dark);
+        background-color: var(--bg-light);
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      body > footer {
+        margin-top: auto;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      ul {
+        list-style: none;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      button {
+        font-family: inherit;
+        cursor: pointer;
+      }
+
+      /* ==================================================================
+         LAYOUT HELPERS
+         ================================================================== */
+      .container {
+        width: 100%;
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      main.container {
+        padding-top: 40px;
+        padding-bottom: 40px;
+      }
+
+      .section-title {
+        font-family: var(--font-heading);
+        font-size: 1.8rem;
+        color: var(--primary);
+        margin-bottom: 25px;
+        position: relative;
+        padding-bottom: 8px;
+      }
+
+      .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background-color: var(--accent);
+      }
+
+      /* Category badge — color-coded per beat */
+      .meta-tag {
+        background-color: var(--accent);
+        color: var(--bg-white);
+        padding: 4px 10px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        border-radius: 4px;
+        display: inline-block;
+      }
+
+      .cat-politics {
+        background-color: var(--primary);
+      }
+      .cat-business {
+        background-color: #64748b;
+      }
+      .cat-agriculture {
+        background-color: #2e7d32;
+      }
+      .cat-heritage {
+        background-color: #7c4dff;
+      }
+      .cat-sports {
+        background-color: #0288d1;
+      }
+      .cat-local {
+        background-color: #475569;
+      }
+
+      .card-meta {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+    </style>
+  </body>
+</html>

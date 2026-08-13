@@ -1,0 +1,104 @@
+---
+/**
+ * Breaking-news ticker — a CSS-animated horizontal marquee.
+ * Receives an array of normalized articles (typically isBreaking === true).
+ * The item list is duplicated so the marquee loops seamlessly.
+ */
+const { articles = [] } = Astro.props;
+
+// Guard: render nothing if there's genuinely no content.
+const items = Array.isArray(articles) ? articles.filter((a) => a?.title) : [];
+---
+
+{
+  items.length > 0 && (
+    <div class="ticker-wrap" role="marquee" aria-label="Breaking news">
+      <div class="ticker-title">
+        <i class="fa-solid fa-bolt" /> BREAKING
+      </div>
+      <div class="ticker-viewport">
+        <div class="ticker-content">
+          {/* duplicate the set twice for a seamless loop */}
+          {[...items, ...items].map((a) => (
+            <a class="ticker-item" href={a.slug ? `/articles/${a.slug}` : '#'}>
+              {a.title}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<style>
+  .ticker-wrap {
+    background-color: #ebf3fa;
+    border-bottom: 1px solid var(--border-color);
+    overflow: hidden;
+    height: 42px;
+    display: flex;
+    align-items: center;
+  }
+
+  .ticker-title {
+    background: var(--accent);
+    color: #fff;
+    padding: 0 20px;
+    height: 42px;
+    line-height: 42px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    z-index: 2;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .ticker-viewport {
+    overflow: hidden;
+    flex: 1;
+  }
+
+  .ticker-content {
+    display: flex;
+    width: max-content;
+    white-space: nowrap;
+    animation: marquee 40s linear infinite;
+    padding-left: 20px;
+  }
+
+  .ticker-viewport:hover .ticker-content {
+    animation-play-state: paused;
+  }
+
+  .ticker-item {
+    display: inline-block;
+    padding: 0 30px;
+    color: var(--primary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+
+  .ticker-item:hover {
+    color: var(--accent);
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+    100% {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ticker-content {
+      animation: none;
+    }
+  }
+</style>
